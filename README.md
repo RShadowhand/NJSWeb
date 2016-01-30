@@ -14,4 +14,12 @@ None
 # How to run
 1) Install Node.JS
 
-2) Done!
+2) > node webserver.js
+
+3A) Put files in www/
+
+3B) Change port (Optional)
+
+4) Navigate to http://localhost:port/
+
+5) Done!
