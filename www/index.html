@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>Node.JS Webserver</title>
+		<?js var util = require("util"); ?>
+		<script>
+			var data = JSON.parse('<?js JSON.stringify(data) ?>'); <!-- get "data" from webserver, give it to browser's local memory as JSON object -->
+		</script>
+	</head>
+	<body>
+		<div id='main'>
+			GET form
+			<form method='get' action=''>
+				<input type="text" name="data">
+			</form>
+			POST form
+			<form method='post' action=''>
+				<input type="text" name="data">
+			</form>
+			<script> document.write(data.name);</script> <!-- pull data from locally parsed data -->
+			<!-- 
+				you can also start a new js block and get data.name from server instead of local memory
+			-->
+			</button>
+			<!-- start server-sided code execution -->
+			<?js 
+				var a = {}; // create JS object
+				a.name = "habla"; // set a's name as "habla"
+				a.surname = "espanol"; // set a's surname as "espanol"
+				"<br>" + a.name + " " + a.surname; // print out a new line and then a's name and surname
+			?>
+			<?js 
+				"<br>"+util.inspect(args, true, 3); // new line and print out server sided GET or POST DATA,ifany exists
+			?>
+			<?js 
+				"<br>"+util.inspect(data, true, 3); // new line and print out server sided data
+			?>
+		</div>
+	</body>
+</html>
