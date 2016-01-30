@@ -8,8 +8,10 @@ var server = http.createServer(function(req, res){
 	var urlHolder = url.parseUrl(req.url);
 	var filename = urlHolder.filename;
 	var args = urlHolder.args;
-	//console.log(filename);
-	if(filename == "/"){filename = "/index.js";}
+	if(filename == "/"){filename = "/index.js";} // Get index.js if nothing is given
+	// ------------------------------------------------
+	// DEBUG URL (RELOADS THE PAGER AND URL PARSER)
+	// ------------------------------------------------
 	if(filename.indexOf('/reload') == 0){
 		var module = filename.split('/')[2];
 		require.uncache('./'+module+'.js');
@@ -22,6 +24,9 @@ var server = http.createServer(function(req, res){
 		res.writeHead(200);
 		res.end(module);
 	}
+	// ------------------------------------------------
+	// DEBUG URL END
+	// ------------------------------------------------
 	else if(filename.indexOf(".js") > 0){
 		if(filename.indexOf("/js/") == -1){
 			require.uncache('./www'+filename);
@@ -29,16 +34,24 @@ var server = http.createServer(function(req, res){
 			toRun.main(req,res,util,args,pager);
 		}
 		else {
-			var page = fs.readFileSync('./www'+filename, 'utf8')
-			res.writeHead(200);
-			res.end(pager.makePage(page,args));
+			var page = "";
+			fs.readFile('./www'+filename, 'utf8', function(e,d){
+				if(e){console.log(e);}
+				page = util.format(d);
+				res.writeHead(200);
+				res.end(pager.makePage(page,args));				
+			});
 		}
 	}
 	else{
 		if(filename != "/favicon.ico"){
-			var page = fs.readFileSync('./www'+filename, 'utf8')
-			res.writeHead(200);
-			res.end(pager.makePage(page,args));
+			var page = "";
+			fs.readFile('./www'+filename, 'utf8', function(e,d){
+				if(e){console.log(e);}
+				page = util.format(d);
+				res.writeHead(200);
+				res.end(pager.makePage(page,args));				
+			});
 		}
 		else{
 			res.writeHead(500);
@@ -52,7 +65,10 @@ server.listen(8082, function(){ // you can change what port it works on
   console.log('listening on *:8082\n');
 });
 
-// Don't fuck with the functions below
+// ---------------------------------
+// DO NOT CHANGE THE FUNCTIONS BELOW
+// UNLESS YOU KNOW WHAT YOU'RE DOING
+// ---------------------------------
 require.uncache = function (moduleName) {
     require.searchCache(moduleName, function (mod) {
         delete require.cache[mod.id];
