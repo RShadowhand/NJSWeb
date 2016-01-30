@@ -8,12 +8,16 @@ var server = http.createServer(function(req, res){
 	var urlHolder = url.parseUrl(req.url);
 	var filename = urlHolder.filename;
 	var args = urlHolder.args;
-	if(filename == "/"){filename = "/index.js";} // Get index.js if nothing is given
+	if(filename == "/"){
+		if (fileExists("index.js")) {filename = "/index.js";}
+		else if (fileExists("index.html")) {filename = "/index.html";}
+		else { res.writeHead(200); res.end("NJSWeb works!");}
+	} 
 	// ------------------------------------------------
 	// DEBUG URL (RELOADS THE PAGER AND URL PARSER)
 	// ------------------------------------------------
-	if(filename.indexOf('/reload') == 0){
-		var module = filename.split('/')[2];
+	if(filename.indexOf('/reload') == 0){ 
+		var module = filename.split('/')[2]; // Gotta tell which module to reload
 		require.uncache('./'+module+'.js');
 		if(module == "pager"){
 			pager = require('./'+module+'.js');
@@ -29,9 +33,15 @@ var server = http.createServer(function(req, res){
 	// ------------------------------------------------
 	else if(filename.indexOf(".js") > 0){
 		if(filename.indexOf("/js/") == -1){
-			require.uncache('./www'+filename);
-			var toRun = require('./www'+filename);
-			toRun.main(req,res,util,args,pager);
+			if(fileExists(filename)){
+				require.uncache('./www'+filename);
+				var toRun = require('./www'+filename);
+				toRun.main(req,res,util,args,pager);	
+			}
+			else {
+				res.writeHead(404);
+				res.end("NO SUCH FILE!");
+			}
 		}
 		else {
 			var page = "";
@@ -45,13 +55,19 @@ var server = http.createServer(function(req, res){
 	}
 	else{
 		if(filename != "/favicon.ico"){
-			var page = "";
-			fs.readFile('./www'+filename, 'utf8', function(e,d){
-				if(e){console.log(e);}
-				page = util.format(d);
-				res.writeHead(200);
-				res.end(pager.makePage(page,args));				
-			});
+			if(fileExists(filename)){
+				var page = "";
+				fs.readFile('./www'+filename, 'utf8', function(e,d){
+					if(e){console.log(e);}
+					page = util.format(d);
+					res.writeHead(200);
+					res.end(pager.makePage(page,args));				
+				});
+			}
+			else {
+				res.writeHead(404);
+				res.end("NO SUCH FILE!");
+			}
 		}
 		else{
 			res.writeHead(500);
@@ -87,3 +103,12 @@ require.searchCache = function (moduleName, callback) {
         })(mod);
     }
 };
+
+var fileExists = function(file){
+	try{
+		fs.statSync("./www/"+file);
+	}catch(err){
+		if(err.code == 'ENOENT') return false;
+	}
+	return true;
+}

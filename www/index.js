@@ -17,7 +17,7 @@ exports.main = function(req, res, util, getargs, pager){
 			args.POST = postData;
 		}
 		
-		fs.readFile(__dirname+'/index.html', 'utf8', function(e,d){ // read file async!
+		fs.readFile(__dirname+'/templates/index.html', 'utf8', function(e,d){ // read file async!
 			if(e){console.log(e);}
 			file = util.format(d);
 			file = pager.makePage(file,args,arr); // parse the page with the given data pack
