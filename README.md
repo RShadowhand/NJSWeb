@@ -29,7 +29,8 @@ None
 # License
 
 NJSWeb - Node.JS Webserver with JS backend and template support
-Copyright (C) 2016  Shadowhand
+
+Copyright (C) 2016 - Author: Shadowhand
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
