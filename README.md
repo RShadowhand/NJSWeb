@@ -8,6 +8,11 @@ Examples are in "www" folder.
 * Templates!
 * GET/POST Support
 
+
+# To do:
+* HTTPS support
+* More failsafes!
+
 # Requirements:
 None
 
