@@ -4,6 +4,15 @@ var util = require("util");
 var url = require("./urlParser.js");
 var pager = require("./pager.js");
 
+extensions = { // Foundation work for some good stuff later
+    ".html" : "text/html",
+    ".css" : "text/css",
+    ".js" : "application/javascript",
+    ".png" : "image/png",
+    ".gif" : "image/gif",
+    ".jpg" : "image/jpeg"
+};
+
 var server = http.createServer(function(req, res){
 	var urlHolder = url.parseUrl(req.url);
 	var filename = urlHolder.filename;
